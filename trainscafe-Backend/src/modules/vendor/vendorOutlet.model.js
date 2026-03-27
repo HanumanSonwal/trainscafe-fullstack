@@ -64,7 +64,6 @@ const vendorOutletSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Prevent duplicate outlet per station
 vendorOutletSchema.index(
   { vendor: 1, station: 1 },
   { unique: true, partialFilterExpression: { isDeleted: false } }

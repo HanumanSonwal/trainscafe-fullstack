@@ -1,9 +1,21 @@
 import express from "express";
-import { createSubAdminController, deleteSubAdminController, getAllSubAdminsController, getSingleSubAdminController, updateSubAdminController } from "./user.controller.js";
+import {
+  createSubAdminController,
+  deleteCustomerController,
+  deleteSubAdminController,
+  getAllCustomersController,
+  getAllSubAdminsController,
+  getSingleCustomerController,
+  getSingleSubAdminController,
+  updateSubAdminController,
+} from "./user.controller.js";
 import { protect } from "../../middleware/auth.middleware.js";
 import { authorizeRoles } from "../../middleware/role.middleware.js";
 import { validate } from "../../middleware/validate.middleware.js";
-import { createSubAdminValidation, updateSubAdminValidation } from "./user.validation.js";
+import {
+  createSubAdminValidation,
+  updateSubAdminValidation,
+} from "./user.validation.js";
 
 const router = express.Router();
 
@@ -12,21 +24,21 @@ router.post(
   protect,
   authorizeRoles("admin"),
   validate(createSubAdminValidation),
-  createSubAdminController
+  createSubAdminController,
 );
 
 router.get(
   "/sub-admin",
   protect,
   authorizeRoles("admin"),
-  getAllSubAdminsController
+  getAllSubAdminsController,
 );
 
 router.get(
   "/sub-admin/:id",
   protect,
   authorizeRoles("admin"),
-  getSingleSubAdminController
+  getSingleSubAdminController,
 );
 
 router.put(
@@ -34,14 +46,33 @@ router.put(
   protect,
   authorizeRoles("admin"),
   validate(updateSubAdminValidation),
-  updateSubAdminController
+  updateSubAdminController,
 );
 
 router.delete(
   "/sub-admin/:id",
   protect,
   authorizeRoles("admin"),
-  deleteSubAdminController
+  deleteSubAdminController,
+);
+
+router.get(
+  "/user",
+  protect,
+  authorizeRoles("admin", "sub-admin"),
+  getAllCustomersController,
+);
+router.get(
+  "/user/:id",
+  protect,
+  authorizeRoles("admin", "sub-admin"),
+  getSingleCustomerController,
+);
+router.delete(
+  "/user/:id",
+  protect,
+  authorizeRoles("admin", "sub-admin"),
+  deleteCustomerController,
 );
 
 export default router;

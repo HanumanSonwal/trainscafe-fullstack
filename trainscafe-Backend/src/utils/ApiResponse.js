@@ -1,11 +1,11 @@
 export const sendSuccess = (
   res,
-  message,
+  message = "Success",
   data = null,
   meta = null,
-  status = 200,
+  status = 200
 ) => {
-  res.status(status).json({
+  return res.status(status).json({
     success: true,
     message,
     data,
@@ -13,13 +13,18 @@ export const sendSuccess = (
   });
 };
 
-export const sendError = (res, message, status = 500, details = null) => {
-  res.status(status).json({
+export const sendError = (
+  res,
+  message = "Something went wrong",
+  status = 500,
+  details = null
+) => {
+  return res.status(status).json({
     success: false,
     message,
     error: {
       statusCode: status,
-      details,
+      ...(details && { details }),
     },
   });
 };

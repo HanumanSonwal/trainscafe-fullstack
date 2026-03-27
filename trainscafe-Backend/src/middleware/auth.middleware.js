@@ -5,19 +5,14 @@ import { sendError } from "../utils/ApiResponse.js";
 export const protect = async (req, res, next) => {
   try {
     let token;
-
-    // 1️⃣ Check Authorization header
     const authHeader = req.headers.authorization;
 
     if (authHeader && authHeader.startsWith("Bearer ")) {
       token = authHeader.split(" ")[1];
     }
-
-    // 2️⃣ If not in header, check cookies
     if (!token && req.cookies?.accessToken) {
       token = req.cookies.accessToken;
     }
-
     if (!token) {
       return sendError(res, "Unauthorized - No token provided", 401);
     }

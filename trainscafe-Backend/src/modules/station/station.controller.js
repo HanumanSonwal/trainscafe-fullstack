@@ -7,8 +7,8 @@ export const getPublicStations = asyncHandler(async (req, res) => {
 
   const result = await service.getStations({
     search,
-    page: Number(page),
-    limit: Number(limit),
+    page:Math.max(1, Number(page)),
+    limit: Math.min(50, Number(limit)),
     adminView: false,
   });
 
@@ -22,7 +22,8 @@ export const getPublicStations = asyncHandler(async (req, res) => {
 
 export const getSingleStation = asyncHandler(async (req, res) => {
   const isAdminView =
-    req.user?.role === "admin" || req.user?.permissions?.station?.read;
+  ["admin", "sub-admin"].includes(req.user?.role) ||
+  req.user?.permissions?.station?.read;
 
   const station = await service.getStationById(req.params.id, isAdminView);
 
@@ -34,8 +35,8 @@ export const getAdminStations = asyncHandler(async (req, res) => {
 
   const result = await service.getStations({
     search,
-    page: Number(page),
-    limit: Number(limit),
+    page: Math.max(1, Number(page)),
+    limit: Math.min(50, Number(limit)),
     adminView: true,
   });
 

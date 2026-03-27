@@ -26,48 +26,34 @@ import { checkPermission } from "../../middleware/permission.middleware.js";
 
 const router = express.Router();
 
-/* =========================================================
-   🌍 PUBLIC ROUTES
-   ========================================================= */
-
 router.get("/", getPublicVendors);
-
-/* =========================================================
-   👑 ADMIN / SUBADMIN ROUTES
-   ========================================================= */
-
-/* ================= BRAND LEVEL ================= */
-
-// ⚠️ Specific routes first (avoid route conflict)
 
 router.get(
   "/admin/outlets",
   protect,
   checkPermission("vendor", "read"),
-  getAdminVendorOutlets
+  getAdminVendorOutlets,
 );
 
 router.patch(
   "/admin/:id/approve",
   protect,
   checkPermission("vendor", "approve"),
-  approveVendor
+  approveVendor,
 );
-
-// -------- Vendor Brand CRUD --------
 
 router.get(
   "/admin",
   protect,
   checkPermission("vendor", "read"),
-  getAdminVendors
+  getAdminVendors,
 );
 
 router.get(
   "/admin/:id",
   protect,
   checkPermission("vendor", "read"),
-  getSingleVendor
+  getSingleVendor,
 );
 
 router.post(
@@ -75,7 +61,7 @@ router.post(
   protect,
   checkPermission("vendor", "create"),
   validate(createVendorSchema),
-  createVendor
+  createVendor,
 );
 
 router.patch(
@@ -83,24 +69,22 @@ router.patch(
   protect,
   checkPermission("vendor", "update"),
   validate(updateVendorSchema),
-  updateVendor
+  updateVendor,
 );
 
 router.delete(
   "/admin/:id",
   protect,
   checkPermission("vendor", "delete"),
-  deleteVendor
+  deleteVendor,
 );
-
-/* ================= OUTLET LEVEL ================= */
 
 router.post(
   "/admin/outlet",
   protect,
   checkPermission("vendor", "create"),
   validate(createVendorOutletSchema),
-  createVendorOutlet
+  createVendorOutlet,
 );
 
 router.patch(
@@ -108,14 +92,14 @@ router.patch(
   protect,
   checkPermission("vendor", "update"),
   validate(updateVendorOutletSchema),
-  updateVendorOutlet
+  updateVendorOutlet,
 );
 
 router.delete(
   "/admin/outlet/:id",
   protect,
   checkPermission("vendor", "delete"),
-  deleteVendorOutlet
+  deleteVendorOutlet,
 );
 
 export default router;

@@ -4,6 +4,9 @@ import {
   getAllSubAdmins,
   getSingleSubAdmin,
   updateSubAdmin,
+  getAllCustomers,
+  getSingleCustomer,
+  deleteCustomer,
 } from "./user.service.js";
 
 import { sendSuccess } from "../../utils/ApiResponse.js";
@@ -37,4 +40,38 @@ export const deleteSubAdminController = asyncHandler(async (req, res) => {
   await deleteSubAdmin(req.params.id, req.user._id);
 
   sendSuccess(res, "Sub-admin deleted successfully");
+});
+
+export const getAllCustomersController = asyncHandler(async (req, res) => {
+  const result = await getAllCustomers(req.query);
+
+  sendSuccess(res, "Customer list fetched", result.data, result.pagination);
+});
+
+export const getSingleCustomerController = asyncHandler(async (req, res) => {
+  const user = await getSingleCustomer(req.params.id);
+
+  sendSuccess(res, "Customer fetched", user);
+});
+
+export const deleteCustomerController = asyncHandler(async (req, res) => {
+  await deleteCustomer(req.params.id);
+
+  sendSuccess(res, "Customer deleted successfully");
+});
+
+export const getProfileController = asyncHandler(async (req, res) => {
+  sendSuccess(res, "Profile fetched", req.user);
+});
+
+export const updateProfileController = asyncHandler(async (req, res) => {
+  const updatedUser = await updateSubAdmin(req.user._id, req.body);
+
+  sendSuccess(res, "Profile updated successfully", updatedUser);
+});
+
+export const deleteProfileController = asyncHandler(async (req, res) => {
+  await deleteSubAdmin(req.user._id, req.user._id);
+
+  sendSuccess(res, "Profile deleted successfully");
 });

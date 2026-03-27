@@ -1,6 +1,18 @@
+import ApiError from "../../utils/ApiError.js";
 import Station from "./station.model.js";
+import {
+  getCache,
+  setCache,
+  deleteCache,
+  deleteByPattern,
+} from "../../utils/cache.js";
 
 export const getStations = async ({ search, page, limit, adminView }) => {
+  const cacheKey = `stations:${search || "all"}:${page}:${limit}:${adminView}`;
+
+  const cached = await getCache(cacheKey);
+  if (cached) return cached;
+
   const query = {};
 
   if (search) {
@@ -10,23 +22,16 @@ export const getStations = async ({ search, page, limit, adminView }) => {
     ];
   }
 
-  if (!adminView) {
-    query.status = true;
-  }
+  if (!adminView) query.status = true;
 
   const skip = (page - 1) * limit;
 
   const [data, total] = await Promise.all([
-    Station.find(query)
-      .sort({ name: 1 })
-      .skip(skip)
-      .limit(limit)
-      .lean(),
-
+    Station.find(query).sort({ name: 1 }).skip(skip).limit(limit).lean(),
     Station.countDocuments(query),
   ]);
 
-  return {
+  const result = {
     data,
     meta: {
       total,
@@ -34,24 +39,36 @@ export const getStations = async ({ search, page, limit, adminView }) => {
       totalPages: Math.ceil(total / limit),
     },
   };
+
+  await setCache(cacheKey, result, 3600);
+
+  return result;
 };
 
 export const getStationById = async (id, adminView) => {
-  const query = { _id: id };
+  const cacheKey = `station:${id}:${adminView}`;
 
-  if (!adminView) {
-    query.status = true;
-  }
+  const cached = await getCache(cacheKey);
+  if (cached) return cached;
+
+  const query = { _id: id };
+  if (!adminView) query.status = true;
 
   const station = await Station.findOne(query).lean();
 
-  if (!station) throw new Error("Station not found");
+  if (!station) throw new ApiError(404, "Station not found");
+
+  await setCache(cacheKey, station, 3600);
 
   return station;
 };
 
 export const createStation = async (body) => {
-  return await Station.create(body);
+  const station = await Station.create(body);
+
+  await deleteByPattern("stations:*");
+
+  return station;
 };
 
 export const updateStation = async (id, body) => {
@@ -59,20 +76,29 @@ export const updateStation = async (id, body) => {
     new: true,
   });
 
-  if (!station) throw new Error("Station not found");
+  if (!station) throw new ApiError(404, "Station not found");
+
+  await deleteByPattern("stations:*");
+
+  await deleteCache(`station:${id}:true`);
+  await deleteCache(`station:${id}:false`);
 
   return station;
 };
 
-// 🔥 Soft delete
 export const deleteStation = async (id) => {
   const station = await Station.findByIdAndUpdate(
     id,
     { status: false },
-    { new: true }
+    { new: true },
   );
 
-  if (!station) throw new Error("Station not found");
+  if (!station) throw new ApiError(404, "Station not found");
+
+  await deleteByPattern("stations:*");
+
+  await deleteCache(`station:${id}:true`);
+  await deleteCache(`station:${id}:false`);
 
   return station;
 };

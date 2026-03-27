@@ -1,6 +1,5 @@
 import Joi from "joi";
 
-// 🔹 Create Vendor
 export const createVendorSchema = Joi.object({
   name: Joi.string().trim().min(2).required(),
 
@@ -24,7 +23,6 @@ export const createVendorSchema = Joi.object({
   description: Joi.string().max(500).optional(),
 });
 
-// 🔹 Update Vendor
 export const updateVendorSchema = Joi.object({
   name: Joi.string().trim().min(2),
   businessName: Joi.string().trim(),
@@ -37,24 +35,16 @@ export const updateVendorSchema = Joi.object({
   isActive: Joi.boolean(),
 });
 
-// 🔹 Create Outlet
 export const createVendorOutletSchema = Joi.object({
   vendor: Joi.string().required(),
 
   station: Joi.string().required(),
 
-  commissionPercent: Joi.number()
-    .min(0)
-    .max(100)
-    .required(),
+  commissionPercent: Joi.number().min(0).max(100).required(),
 
-  deliveryCharges: Joi.number()
-    .min(0)
-    .default(0),
+  deliveryCharges: Joi.number().min(0).default(0),
 
-  minOrderValue: Joi.number()
-    .min(0)
-    .default(0),
+  minOrderValue: Joi.number().min(0).default(0),
 
   workingHours: Joi.string().trim().optional(),
 
@@ -67,15 +57,14 @@ export const createVendorOutletSchema = Joi.object({
         "Wednesday",
         "Thursday",
         "Friday",
-        "Saturday"
-      )
+        "Saturday",
+      ),
     )
     .optional(),
 
   address: Joi.string().trim().optional(),
 });
 
-// 🔹 Update Outlet
 export const updateVendorOutletSchema = Joi.object({
   commissionPercent: Joi.number().min(0).max(100),
 
@@ -93,8 +82,8 @@ export const updateVendorOutletSchema = Joi.object({
       "Wednesday",
       "Thursday",
       "Friday",
-      "Saturday"
-    )
+      "Saturday",
+    ),
   ),
 
   address: Joi.string().trim(),

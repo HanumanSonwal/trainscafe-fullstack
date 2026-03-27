@@ -12,5 +12,10 @@ export const errorHandler = (err, req, res, next) => {
     return sendError(res, `${field} already exists`, 400);
   }
 
-  return sendError(res, err.message || "Something went wrong", 500);
+  return sendError(
+    res,
+    err.message || "Something went wrong",
+    err.statusCode || 500,
+    err.details || null
+  );
 };

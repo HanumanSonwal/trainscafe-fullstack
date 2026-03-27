@@ -14,13 +14,11 @@ const vendorSchema = new mongoose.Schema(
       unique: true,
     },
 
-    // 🔐 Login Link (Optional if vendor login allowed)
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
 
-    // 🏢 Business Info
     name: {
       type: String,
       required: true,
@@ -76,7 +74,6 @@ const vendorSchema = new mongoose.Schema(
       message: "Description can be max 500 characters",
     },
 
-    // 🔎 Admin Approval
     isApproved: {
       type: Boolean,
       default: false,
@@ -90,7 +87,6 @@ const vendorSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-// 🔥 Auto Generate Vendor ID
 vendorSchema.pre("save", async function () {
   if (!this.isNew) return;
 

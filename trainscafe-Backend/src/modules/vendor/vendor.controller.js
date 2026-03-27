@@ -2,30 +2,26 @@ import * as service from "./vendor.service.js";
 import { sendSuccess } from "../../utils/ApiResponse.js";
 import { asyncHandler } from "../../middleware/asyncHandler.js";
 
-/* ================= PUBLIC ================= */
-
 export const getPublicVendors = asyncHandler(async (req, res) => {
   const { search = "", station, page = 1, limit = 10 } = req.query;
 
   const result = await service.getPublicVendors({
     search,
     station,
-    page: Number(page),
-    limit: Number(limit),
+    page: Math.max(1, Number(page)),
+    limit: Math.min(50, Number(limit)),
   });
 
   return sendSuccess(res, "Vendors fetched", result.data, result.meta);
 });
-
-/* ================= ADMIN ================= */
 
 export const getAdminVendors = asyncHandler(async (req, res) => {
   const { search = "", page = 1, limit = 10 } = req.query;
 
   const result = await service.getAdminVendors({
     search,
-    page: Number(page),
-    limit: Number(limit),
+    page: Math.max(1, Number(page)),
+    limit: Math.min(50, Number(limit)),
   });
 
   return sendSuccess(res, "Vendor brands fetched", result.data, result.meta);
@@ -37,8 +33,8 @@ export const getAdminVendorOutlets = asyncHandler(async (req, res) => {
   const result = await service.getAdminVendorOutlets({
     search,
     station,
-    page: Number(page),
-    limit: Number(limit),
+    page: Math.max(1, Number(page)),
+    limit: Math.min(50, Number(limit)),
   });
 
   return sendSuccess(res, "Vendor outlets fetched", result.data, result.meta);

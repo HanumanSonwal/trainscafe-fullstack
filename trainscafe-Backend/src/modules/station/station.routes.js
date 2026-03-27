@@ -13,43 +13,41 @@ import { checkPermission } from "../../middleware/permission.middleware.js";
 
 const router = express.Router();
 
-// 👑 ADMIN ROUTES FIRST
 router.get(
   "/admin",
   protect,
   checkPermission("station", "read"),
-  getAdminStations
+  getAdminStations,
 );
 
 router.get(
   "/admin/:id",
   protect,
   checkPermission("station", "read"),
-  getSingleStation
+  getSingleStation,
 );
 
 router.post(
   "/admin",
   protect,
   checkPermission("station", "create"),
-  createStation
+  createStation,
 );
 
 router.patch(
   "/admin/:id",
   protect,
   checkPermission("station", "update"),
-  updateStation
+  updateStation,
 );
 
 router.delete(
   "/admin/:id",
   protect,
   checkPermission("station", "delete"),
-  deleteStation
+  deleteStation,
 );
 
-// 🌍 PUBLIC ROUTES LAST
 router.get("/", getPublicStations);
 router.get("/:id", getSingleStation);
 
